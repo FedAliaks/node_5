@@ -1,18 +1,48 @@
 const express = require("express");
 
 const turtleRoute = express.Router();
+const { db } = require("../context/db");
 
 // TO DO #4 add turtle
-turtleRoute.post("/add", (req, res) => {
-  const body = req.body;
-  console.log("here");
-  console.log(body);
+turtleRoute.post("/add", async (req, res) => {
+  try {
+    console.log("here");
+    const {
+      name,
+      color,
+      weaponId,
+      firstFavoritePizzaId,
+      secondFavoritePizzaId,
+    } = req.body;
 
-  res.status(200).send(body);
+    const turtle = await db.turtleModel.create({ name, color, weaponId });
+    console.log("next");
+
+    const pizza1 = await db.pizzaModel.findByPk(firstFavoritePizzaId);
+    const pizza2 = await db.pizzaModel.findByPk(secondFavoritePizzaId);
+
+    console.log(pizza1);
+    console.log(db);
+
+    /*     await turtle.addPizzaModel(pizza1, {through: {favoriteType: 'firstFavoritePizzaId'}})
+    console.log('next-next')
+    await turtle.addPizzaModel(pizza2, {through: {favoriteType: 'secondFavoritePizzaId'}}) */
+
+    /*     await turtle.addPizzaModel(pizza1, {through: {favoriteType: 'firstFavoritePizzaId'}})
+     */
+
+    console.log("next-next");
+    await turtle.addPizza(pizza1, {
+      through: { favoriteType: "firstFavoritePizzaId" },
+    });
+
+    console.log("next-next");
+
+    res.status(200).send(turtle);
+  } catch {
+    res.status(500).send("error");
+  }
 });
-
-
-
 
 //TO DO #2 pizza Mazzarella
 turtleRoute.get("/liked", (req, res) => {

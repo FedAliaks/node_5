@@ -12,14 +12,23 @@ module.exports = (Sequelize) => {
     },
   );
 
-  const turtleModel = require("../models/turtle")(Sequelize, sequelize);
   const weaponModel = require("../models/weapon")(Sequelize, sequelize);
   const pizzaModel = require("../models/pizza")(Sequelize, sequelize);
+  const turtlePizzaModel = require("../models/turtlePizza")(
+    Sequelize,
+    sequelize,
+  );
+  const turtleModel = require("../models/turtle")(
+    Sequelize,
+    sequelize,
+    weaponModel,
+  );
 
   return {
     sequelize,
     turtleModel,
     weaponModel,
     pizzaModel,
+    turtlePizzaModel,
   };
 };

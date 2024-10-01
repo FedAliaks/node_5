@@ -1,4 +1,4 @@
-module.exports = (Sequelize, sequelize) => {
+module.exports = (Sequelize, sequelize, weaponModel) => {
   return sequelize.define("turtle", {
     id: {
       type: Sequelize.INTEGER,
@@ -13,6 +13,10 @@ module.exports = (Sequelize, sequelize) => {
     },
     weaponId: {
       type: Sequelize.INTEGER,
+      references: {
+        model: weaponModel,
+        key: "id",
+      },
     },
     firstFavoritePizzaId: {
       type: Sequelize.INTEGER,
