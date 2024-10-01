@@ -1,9 +1,16 @@
 const express = require("express");
 const Sequelize = require("sequelize");
+const { pizzaRoute } = require("./routes/pizzaRoute.js");
+const { weaponRoute } = require("./routes/weaponRoute.js");
+const { turtleRoute } = require("./routes/turtleRoute.js");
 
 const db = require("./context.js/index")(Sequelize);
 const app = express();
 app.use(express.json());
+
+app.use("/api/pizza", pizzaRoute);
+app.use("/api/weapon", weaponRoute);
+app.use("/api/turtle", turtleRoute);
 
 db.sequelize
   .sync()
