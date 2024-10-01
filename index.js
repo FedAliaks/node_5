@@ -1,10 +1,10 @@
 const express = require("express");
-const Sequelize = require("sequelize");
+
 const { pizzaRoute } = require("./routes/pizzaRoute.js");
 const { weaponRoute } = require("./routes/weaponRoute.js");
 const { turtleRoute } = require("./routes/turtleRoute.js");
+const { db } = require("./context/db.js");
 
-const db = require("./context/index")(Sequelize);
 const app = express();
 app.use(express.json());
 

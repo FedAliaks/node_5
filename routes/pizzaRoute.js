@@ -1,20 +1,34 @@
 const express = require("express");
+const { db } = require("../context/db");
 
 const pizzaRoute = express.Router();
 
-pizzaRoute.post("/add", (req, res) => {
+// add pizza
+pizzaRoute.post("/add", async (req, res) => {
   const body = req.body;
-  console.log("here");
-  console.log(body);
-
-  res.status(200).send(body);
+  const newPizza = await db.pizzaModel.create(body);
+  res.status(200).send(newPizza);
 });
 
-// TO DO #7 Найдем пиццу с id равным 1
-pizzaRoute.get("/read/:id", (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  res.status(200).send(id);
+pizzaRoute.get("/read/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+
+    const pizza = await db.pizzaModel.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!pizza) {
+      res.status(400).send("id has not found");
+    } else {
+      res.status(200).send(pizza);
+    }
+  } catch (err) {
+    res.status(500).send("something wrong");
+  }
 });
 
 // TO DO #3 all liked pizza unique
