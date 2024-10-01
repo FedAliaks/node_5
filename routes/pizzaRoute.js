@@ -1,4 +1,6 @@
 const express = require("express");
+const { Op } = require("sequelize");
+
 const { db } = require("../context/db");
 
 const pizzaRoute = express.Router();
@@ -37,11 +39,32 @@ pizzaRoute.get("/all-liked", (req, res) => {
   res.status(200).send("all liked");
 });
 
-// TO DO #5 update super fat
-pizzaRoute.put("/add-super-fat", (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  res.status(200).send(id);
+pizzaRoute.put("/add-super-fat", async (req, res) => {
+  try {
+    const allPizzaId = await db.pizzaModel.findAll({
+      where: {
+        calories: { [Op.gte]: 3000 },
+      },
+    });
+
+    const arr = allPizzaId.map((item) => item.dataValues.id);
+
+    arr.forEach(async (idItem) => {
+      const pizza = await db.pizzaModel.findOne({
+        where: {
+          id: idItem,
+        },
+      });
+
+      pizza.description = pizza.description + "SUPER FAT";
+
+      await pizza.save();
+    });
+
+    res.status(200).send("DONE");
+  } catch {
+    res.status(500).send("something wrong");
+  }
 });
 
 module.exports = {
