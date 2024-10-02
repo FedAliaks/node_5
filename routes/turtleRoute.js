@@ -47,8 +47,34 @@ turtleRoute.get("/liked", async (req, res) => {
 });
 
 //TO DO #8 Добавим пятой черепашке любимую пиццу через объект черепахи
-turtleRoute.put("/update-pizza/:id", (req, res) => {
-  res.status(200).send("add favouite pizza");
+turtleRoute.put("/update-pizza/:id", async (req, res) => {
+  try {
+    console.log("here");
+    const { id } = req.params;
+    console.log(id);
+    const pizza = req.query.type;
+    console.log(pizza);
+
+    const turtle = await db.turtleModel.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    const pizzaID = await db.pizzaModel.findOne({
+      where: {
+        name: pizza,
+      },
+      attributes: ["id"],
+    });
+
+    turtle.secondFavoritePizzaId = pizzaID.id;
+    await turtle.save();
+
+    res.status(200).send(turtle);
+  } catch {
+    res.status(500).send("error");
+  }
 });
 
 turtleRoute.get("/readall", async (req, res) => {
