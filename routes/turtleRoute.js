@@ -3,7 +3,6 @@ const express = require("express");
 const turtleRoute = express.Router();
 const { db } = require("../context/db");
 
-// TO DO #4 add turtle
 turtleRoute.post("/add", async (req, res) => {
   try {
     console.log("here");
@@ -15,26 +14,10 @@ turtleRoute.post("/add", async (req, res) => {
       secondFavoritePizzaId,
     } = req.body;
 
-    const turtle = await db.turtleModel.create({ name, color, weaponId });
+    const body = req.body;
+
+    const turtle = await db.turtleModel.create(body);
     console.log("next");
-
-    const pizza1 = await db.pizzaModel.findByPk(firstFavoritePizzaId);
-    const pizza2 = await db.pizzaModel.findByPk(secondFavoritePizzaId);
-
-    console.log(pizza1);
-    console.log(db);
-
-    /*     await turtle.addPizzaModel(pizza1, {through: {favoriteType: 'firstFavoritePizzaId'}})
-    console.log('next-next')
-    await turtle.addPizzaModel(pizza2, {through: {favoriteType: 'secondFavoritePizzaId'}}) */
-
-    /*     await turtle.addPizzaModel(pizza1, {through: {favoriteType: 'firstFavoritePizzaId'}})
-     */
-
-    console.log("next-next");
-    await turtle.addPizza(pizza1, {
-      through: { favoriteType: "firstFavoritePizzaId" },
-    });
 
     console.log("next-next");
 

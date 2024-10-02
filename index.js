@@ -13,10 +13,10 @@ app.use("/api/weapon", weaponRoute);
 app.use("/api/turtle", turtleRoute);
 
 db.turtleModel.belongsTo(db.weaponModel, { foreignKey: "weaponId" });
-db.weaponModel.hasMany(db.turtleModel, { foreignKey: "weaponId" });
-
-db.turtleModel.belongsToMany(db.pizzaModel, { through: db.turtlePizzaModel });
-db.pizzaModel.belongsToMany(db.turtleModel, { through: db.turtlePizzaModel });
+db.turtleModel.belongsTo(db.pizzaModel, { foreignKey: "firstFavoritePizzaId" });
+db.turtleModel.belongsTo(db.pizzaModel, {
+  foreignKey: "secondFavoritePizzaId",
+});
 
 db.sequelize
   .sync()
