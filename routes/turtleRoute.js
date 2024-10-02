@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 
 const turtleRoute = express.Router();
 const { db } = require("../context/db");
@@ -15,12 +16,34 @@ turtleRoute.post("/add", async (req, res) => {
   }
 });
 
-//TO DO #2 pizza Mazzarella
-turtleRoute.get("/liked", (req, res) => {
-  const query = req.query;
-  console.log(query);
+turtleRoute.get("/liked", async (req, res) => {
+  try {
+    const type = req.query.type;
+    const pizza = await db.pizzaModel.findOne({
+      where: {
+        name: type,
+      },
+    });
 
-  res.status(200).send(query);
+    const idPizza = pizza.id;
+
+    if (!idPizza) {
+      res.status(400).send("pizza have not found");
+    }
+
+    const selectedPizzas = await db.turtleModel.findAll({
+      where: {
+        [Op.or]: [
+          { firstFavoritePizzaId: idPizza },
+          { secondFavoritePizzaId: idPizza },
+        ],
+      },
+    });
+
+    res.status(200).send(selectedPizzas);
+  } catch {
+    res.status(502).send("error");
+  }
 });
 
 //TO DO #8 Добавим пятой черепашке любимую пиццу через объект черепахи
