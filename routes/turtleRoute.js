@@ -5,21 +5,9 @@ const { db } = require("../context/db");
 
 turtleRoute.post("/add", async (req, res) => {
   try {
-    console.log("here");
-    const {
-      name,
-      color,
-      weaponId,
-      firstFavoritePizzaId,
-      secondFavoritePizzaId,
-    } = req.body;
-
     const body = req.body;
 
     const turtle = await db.turtleModel.create(body);
-    console.log("next");
-
-    console.log("next-next");
 
     res.status(200).send(turtle);
   } catch {
@@ -38,6 +26,15 @@ turtleRoute.get("/liked", (req, res) => {
 //TO DO #8 Добавим пятой черепашке любимую пиццу через объект черепахи
 turtleRoute.put("/update-pizza/:id", (req, res) => {
   res.status(200).send("add favouite pizza");
+});
+
+turtleRoute.get("/readall", async (req, res) => {
+  try {
+    const allTurtle = await db.turtleModel.findAll();
+    res.status(200).send(allTurtle);
+  } catch {
+    res.status(500).send("error");
+  }
 });
 
 module.exports = {
