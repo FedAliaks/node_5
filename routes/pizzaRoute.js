@@ -7,15 +7,18 @@ const pizzaRoute = express.Router();
 
 // add pizza
 pizzaRoute.post("/add", async (req, res) => {
-  const body = req.body;
-  const newPizza = await db.pizzaModel.create(body);
-  res.status(200).send(newPizza);
+  try {
+    const body = req.body;
+    const newPizza = await db.pizzaModel.create(body);
+    res.status(200).send(newPizza);
+  } catch {
+    res.status(500).send("error");
+  }
 });
 
 pizzaRoute.get("/read/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
 
     const pizza = await db.pizzaModel.findOne({
       where: {
