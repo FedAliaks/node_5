@@ -33,10 +33,31 @@ pizzaRoute.get("/read/:id", async (req, res) => {
   }
 });
 
-// TO DO #3 all liked pizza unique
-pizzaRoute.get("/all-liked", (req, res) => {
-  console.log("all liked pizza");
-  res.status(200).send("all liked");
+pizzaRoute.get("/all-liked", async (req, res) => {
+  try {
+    const allLikedPizzas = await db.turtleModel.findAll({
+      attributes: ["firstFavoritePizzaId", "secondFavoritePizzaId"],
+    });
+
+    const setLikedPizzas = new Set();
+    allLikedPizzas.forEach((item) => {
+      setLikedPizzas.add(item.firstFavoritePizzaId);
+      setLikedPizzas.add(item.secondFavoritePizzaId);
+    });
+
+    const arrPizzasId = Array.from(setLikedPizzas).filter((item) => item);
+    const pizzas = await db.pizzaModel.findAll({
+      where: {
+        id: {
+          [Op.in]: arrPizzasId,
+        },
+      },
+    });
+
+    res.status(200).send(pizzas);
+  } catch {
+    res.status(500).send("error");
+  }
 });
 
 pizzaRoute.put("/add-super-fat", async (req, res) => {
